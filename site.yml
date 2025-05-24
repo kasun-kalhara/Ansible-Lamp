@@ -1,0 +1,10 @@
+---
+- name: Configure LAMP stack with security and monitoring
+  hosts: all
+  become: yes
+  roles:
+    - apache
+    - mysql
+    - php
+    - security
+    - monitoring

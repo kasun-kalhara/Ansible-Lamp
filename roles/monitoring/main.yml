@@ -1,0 +1,27 @@
+---
+- name: Add node_exporter user
+  user:
+    name: "{{ monitoring_user }}"
+    shell: /usr/sbin/nologin
+
+- name: Download Node Exporter
+  get_url:
+    url: https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
+    dest: /tmp/node_exporter.tar.gz
+
+- name: Extract and install node_exporter
+  unarchive:
+    src: /tmp/node_exporter.tar.gz
+    dest: /opt/
+    remote_src: yes
+
+- name: Setup systemd service
+  template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+
+- name: Start node_exporter
+  systemd:
+    name: node_exporter
+    enabled: yes
+    state: started
